@@ -2,13 +2,14 @@ import {
   Column,
   Entity,
   Index,
-  JoinColumn,
+  JoinColumn, JoinTable, ManyToMany,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from "typeorm";
 import { ArticleFeature } from "./ArticleFeature";
 import { Category } from "./Category";
+import { Article } from "./Article";
 
 @Index("uq_feature_category_id_name", ["name", "categoryId"], { unique: true })
 @Index("fk_feature_category_id", ["categoryId"], {})
@@ -25,6 +26,14 @@ export class Feature {
 
   @OneToMany(() => ArticleFeature, (articleFeature) => articleFeature.feature)
   articleFeatures: ArticleFeature[];
+
+  @ManyToMany(type=>Article,article=>article.features)
+  @JoinTable({
+    name: "article_feature",
+    joinColumn: { name:"feature_id", referencedColumnName:"featureId"},
+    inverseJoinColumn: { name:"article_id", referencedColumnName: "articleId"}
+  })
+  articles:Article[];
 
   @ManyToOne(() => Category, (category) => category.features, {
     onDelete: "RESTRICT",

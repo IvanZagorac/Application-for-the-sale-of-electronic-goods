@@ -1,0 +1,1 @@
+export const jwtSecret:string="wgefgwedwqwdqwdwgesaxqxx3121wswxew1212wsx"

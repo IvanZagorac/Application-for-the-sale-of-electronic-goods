@@ -2,16 +2,17 @@ import {
   Column,
   Entity,
   Index,
-  JoinColumn,
+  JoinColumn, JoinTable, ManyToMany,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from "typeorm";
 import { Category } from "./Category";
 import { ArticleFeature } from "./ArticleFeature";
 import { ArticlePrice } from "./ArticlePrice";
 import { CartArticle } from "./CartArticle";
 import { Photo } from "./Photo";
+import { Feature } from "./Feature";
 
 @Index("fk_article_category_id", ["categoryId"], {})
 @Entity("article")
@@ -56,6 +57,14 @@ export class Article {
 
   @OneToMany(() => ArticleFeature, (articleFeature) => articleFeature.article)
   articleFeatures: ArticleFeature[];
+
+  @ManyToMany(type=>Feature,feature=>feature.articles)
+  @JoinTable({
+      name: "article_feature",
+      joinColumn: { name:"article_id", referencedColumnName:"articleId"},
+      inverseJoinColumn: { name:"feature_id", referencedColumnName: "featureId"}
+    })
+    features:Feature[];
 
   @OneToMany(() => ArticlePrice, (articlePrice) => articlePrice.article)
   articlePrices: ArticlePrice[];
