@@ -15,37 +15,36 @@ export class AuthMiddleware implements NestMiddleware{
     if (!req.headers.authorization) {
       throw new HttpException("No authorization token", HttpStatus.UNAUTHORIZED)
     }
+
     const token = req.headers.authorization;
 
     const tokenParts=token.split(' ');
     if(tokenParts.length!==2){
-      throw  new HttpException("Bad token found",HttpStatus.UNAUTHORIZED);
-
+      throw  new HttpException("Wrong token length",HttpStatus.UNAUTHORIZED);
+      console.log("Duljina nije 2")
     }
 
     const tokenString=tokenParts[1]
 
     let  jwtData: JwtDataAdministratorDto;
     try{
-      jwt.verify(tokenString, jwtSecret);
+      jwtData=jwt.verify(tokenString, jwtSecret);
     } catch(e){
-      throw new HttpException("Bad token found", HttpStatus.UNAUTHORIZED);
+      throw new HttpException("Wrong token", HttpStatus.UNAUTHORIZED);
+      console.log("Glupi token")
     }
     if (!jwtData) {
-      throw new HttpException("Bad token found", HttpStatus.UNAUTHORIZED);
-
-    }
-
-    if (jwtData.ip !== req.ip.toString()) {
-      throw  new HttpException("Bad token found", HttpStatus.UNAUTHORIZED);
+      throw new HttpException("There is no available token", HttpStatus.UNAUTHORIZED);
+      console.log("Ne postoji")
     }
 
     if (jwtData.ua !== req.headers["user-agent"]) {
-      throw  new HttpException("Bad token found", HttpStatus.UNAUTHORIZED);
+      throw  new HttpException("Wrong user agent from token", HttpStatus.UNAUTHORIZED);
+      console.log("ua")
     }
 
       if (jwtData.ip !== req.ip.toString()) {
-        throw  new HttpException("Bad token found", HttpStatus.UNAUTHORIZED);
+        throw  new HttpException("Wrong ip from token", HttpStatus.UNAUTHORIZED);
       }
 
       const administrator=await this.administratorService.getById(jwtData.administratorId);
