@@ -2,13 +2,17 @@ import { HttpException, HttpStatus, Injectable, NestMiddleware } from "@nestjs/c
 import { NextFunction,Request,Response } from "express";
 import { AdministratorService } from "../services/administrator/administrator.service";
 import* as jwt from'jsonwebtoken';
-import { JwtDataAdministratorDto } from "../dtos/administrator/jws.data.administrator.dto";
+import { JwtDataDto } from "../dtos/auth/jwt.data.dto";
 import { jwtSecret } from "../../config/jwt.secret";
+import { UserService } from "../services/user/user.service";
 
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware{
-  constructor(private  administratorService:AdministratorService) {
+  constructor(
+    public  administratorService:AdministratorService,
+    public userService:UserService,
+    ) {
   }
 
   async use(req: Request, res: Response, next:NextFunction) {
@@ -26,7 +30,7 @@ export class AuthMiddleware implements NestMiddleware{
 
     const tokenString=tokenParts[1]
 
-    let  jwtData: JwtDataAdministratorDto;
+    let  jwtData: JwtDataDto;
     try{
       jwtData=jwt.verify(tokenString, jwtSecret);
     } catch(e){
@@ -47,7 +51,19 @@ export class AuthMiddleware implements NestMiddleware{
         throw  new HttpException("Wrong ip from token", HttpStatus.UNAUTHORIZED);
       }
 
-      const administrator=await this.administratorService.getById(jwtData.administratorId);
+      if(jwtData.role==="administrator"){
+        const administrator=await this.administratorService.getById(jwtData.id);
+        if(!administrator){
+          throw  new HttpException("Administrator not found found", HttpStatus.UNAUTHORIZED);
+        }
+      }else if(jwtData.role==="user"){
+        const user=await this.userService.getById(jwtData.id);
+        if(!user){
+          throw  new HttpException("User not found found", HttpStatus.UNAUTHORIZED);
+        }
+      }
+
+      const administrator=await this.administratorService.getById(jwtData.id);
       if(!administrator){
         throw  new HttpException("Administrator not found found", HttpStatus.UNAUTHORIZED);
       }
