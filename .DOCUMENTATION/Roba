@@ -1,0 +1,16 @@
+User dodaj robu u kosaru:
+1.Je li postoji u bazi za korisnika otvorena kosara koja nije iskoriscena(za koju se ne vezuje narudzba)?
+-Da:Koristimo tu kosaru i nju dodajemo robu
+-Ne:Napraviti novu kosaru i onda u nju dodati
+
+2.Korisnik dodaju robu koja je u kosari?
+-ne:Dodajemo evidenciju te robu u kosaru.
+-Da:Mijenjamo evidenciju dodate,tako da uvecamo kolicinu za onu koja je dodata
+
+3.Vratiti sve podatke o kosari(+ evidencija dodatih artikala)
+
+Izmena dodate robe u kosari:
+1.Da li postoji u bazi za korisnika otvorena kosara koja nije iskoriscena
+    -Da:Da li postoji evidencija da je roba dodata u kosaru?
+        -Da:Za tu evidenciju dodate robe mijenjamo kolicinu.
+        -Ne: Ne radimo nista
