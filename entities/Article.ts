@@ -13,6 +13,7 @@ import { ArticlePrice } from "./ArticlePrice";
 import { CartArticle } from "./CartArticle";
 import { Photo } from "./Photo";
 import { Feature } from "./Feature";
+import *  as Validator from 'class-validator'
 
 @Index("fk_article_category_id", ["categoryId"], {})
 @Entity("article")
@@ -21,15 +22,24 @@ export class Article {
   articleId: number;
 
   @Column("varchar", { name: "name", length: 32 })
+  @Validator.IsNotEmpty()
+  @Validator.IsString()
+  @Validator.Length(5,128)
   name: string;
 
   @Column("int", { name: "category_id", unsigned: true })
   categoryId: number;
 
   @Column("varchar", { name: "excerpt", length: 128 })
+  @Validator.IsNotEmpty()
+  @Validator.IsString()
+  @Validator.Length(12,255)
   excerpt: string;
 
   @Column("tinytext", { name: "description" })
+  @Validator.IsNotEmpty()
+  @Validator.IsString()
+  @Validator.Length(54,10000)
   description: string;
 
   @Column("enum", {
@@ -37,9 +47,13 @@ export class Article {
     enum: ["available", "visible", "hidden"],
     default: () => "'available'",
   })
+  @Validator.IsNotEmpty()
+  @Validator.IsString()
   status: "available" | "visible" | "hidden";
 
   @Column("tinyint", { name: "is_promoted", unsigned: true })
+  @Validator.IsNotEmpty()
+  @Validator.IsIn([0,1])
   isPromoted: number;
 
   @Column("timestamp", {

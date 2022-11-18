@@ -28,6 +28,7 @@
     "@nestjsx/crud": "^5.0.0-alpha.3",
     "@nestjsx/crud-request": "^5.0.0-alpha.3",
     "@nestjsx/crud-typeorm": "^5.0.0-alpha.3",
+    "class-validator": "^0.13.2",
     "file-type": "^18.0.0",
     "jsonwebtoken": "^8.5.1",
     "magic-bytes.js": "^1.0.13",

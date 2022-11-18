@@ -6,6 +6,7 @@ import { CartArticle } from "../../../entities/CartArticle";
 import { Article } from "../../../entities/Article";
 import { Order } from "../../../entities/Order";
 import { EditQuantityInCartDto } from "../../dtos/cart/edit.quantity.in.cart.dto";
+import { ApiResponse } from "../../mlnsc/api/response.class";
 
 
 @Injectable()
@@ -16,10 +17,7 @@ export class CartService {
     private readonly cart: Repository<Cart>,
     @InjectRepository(CartArticle)
     private readonly cartArticle: Repository<CartArticle>,
-    @InjectRepository(Article)
-    private readonly article: Repository<Article>,
-    @InjectRepository(Order)
-    private readonly order: Repository<Order>,
+
   ) {
   }
 
@@ -82,7 +80,8 @@ export class CartService {
           "user",
           "cartArticles",
           "cartArticles.article",
-          "cartArticles.article.category"
+          "cartArticles.article.category",
+          "cartArticles.article.articlePrices"
         ]}
       );
     }
@@ -107,5 +106,6 @@ export class CartService {
 
       return await this.getById(cartId);
     }
+
 
 }

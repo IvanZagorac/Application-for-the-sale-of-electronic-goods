@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Article } from "./Article";
+import *  as Validator from 'class-validator'
 
 @Index("fk_article_price", ["articleId"], {})
 @Entity("article_price", { schema: "web_app" })
@@ -22,6 +23,13 @@ export class ArticlePrice {
   articleId: number;
 
   @Column("decimal", { name: "price", unsigned: true, precision: 10, scale: 2 })
+  @Validator.IsNotEmpty()
+  @Validator.IsNumber({
+    allowInfinity:false,
+    allowNaN:false,
+    maxDecimalPlaces:2,
+  })
+  @Validator.IsPositive()
   price: number;
 
   @Column("timestamp", {

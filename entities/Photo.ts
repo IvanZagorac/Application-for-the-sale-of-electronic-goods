@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Article } from "./Article";
+import *  as Validator from 'class-validator'
 
 @Index("uq_photo_path", ["imagePath"], { unique: true })
 @Index("fk_photo_article_id", ["articleId"], {})

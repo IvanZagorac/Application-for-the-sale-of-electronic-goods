@@ -27,6 +27,7 @@ import { FeatureController } from "./controllers/api/feature.controller";
 import { UserService } from "./services/user/user.service";
 import { CartService } from "./services/cart/cart.service";
 import { UserCartController } from "./controllers/api/user.cart.controller";
+import { OrderService } from "./services/order/order.service";
 
 @Module({
   imports: [
@@ -83,6 +84,8 @@ import { UserCartController } from "./controllers/api/user.cart.controller";
     FeatureService,
     UserService,
     CartService,
+    UserService,
+    OrderService
   ],
   exports:[
     AdministratorService,

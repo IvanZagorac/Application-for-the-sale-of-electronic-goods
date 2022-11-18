@@ -1,0 +1,5 @@
+User:: Make an order
+1.Da li u aktivnoj korpi korisnika postoji dodata roba
+    -Ne:Ne moze da se napravi:error
+    -Da:Pravvimo narudzbu za tu kosaricu
+2.Vracamo informacije o narudzbi
