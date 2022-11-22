@@ -31,6 +31,7 @@ import { fileTypeFromFile } from "file-type";
 import { EditArticleDto } from "../../dtos/article/edit.article.dto";
 import { RoleCheckedGuard } from "../../mlnsc/role.checker.guard";
 import { AllowToRolesDescriptor } from "../../mlnsc/allow.to.roles.descriptor";
+import { ArticleSearchDto } from "../../dtos/article/article.search.dto";
 
 @Controller('api/article')
 @Crud({
@@ -250,5 +251,12 @@ export class ArticleController{
       }
 
      return new ApiResponse('ok',0,"One photo deleted");
+  }
+
+  @Post('search')
+  @UseGuards(RoleCheckedGuard)
+  @AllowToRolesDescriptor('administrator','user')
+  async search(@Body() data:ArticleSearchDto):Promise<Article[]>{
+    return await this.service.search(data);
   }
 }

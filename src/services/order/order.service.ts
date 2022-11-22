@@ -65,4 +65,20 @@ export class OrderService {
     );
   }
 
+  async changeStatus(orderId:number,newStatus:"accepted"|"rejected"|"pending"|"send"){
+      const order= await this.getById(orderId);
+
+      if(!order){
+        return new ApiResponse('error',-9001,"No such order found");
+
+
+      }
+
+      order.status=newStatus;
+
+      await this.order.save(order);
+
+      return await this.getById(orderId)
+  }
+
 }

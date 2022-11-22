@@ -33,6 +33,8 @@ export class CartService {
         relations:["order"],
       });
 
+      console.log(carts)
+
       if(!carts||carts.length===0){
         return null;
       }

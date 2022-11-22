@@ -10,6 +10,7 @@ import { AddOrderDto } from "../../dtos/order/add.order.dto";
 import { Order } from "../../../entities/Order";
 import { ApiResponse } from "../../mlnsc/api/response.class";
 import { OrderService } from "../../services/order/order.service";
+import { OrderMailerService } from "../../services/order/order.mailer.service";
 
 @Controller('api/user/cart')
 export class UserCartController{
@@ -17,6 +18,7 @@ export class UserCartController{
   constructor(
     private orderService:OrderService,
     private cartService:CartService,
+    private orderMailerService:OrderMailerService
     ) {}
 
   private async getActiveCartByUserId(userId:number):Promise<Cart>{
@@ -62,8 +64,15 @@ export class UserCartController{
     @AllowToRolesDescriptor('user')
     async addOrder(@Req()req:Request):Promise<Order |ApiResponse> {
       const cart=await this.getActiveCartByUserId(req.token.id);
+      const order=await this.orderService.makeOrder(cart.cartId)
 
-      return await this.orderService.makeOrder(cart.cartId);
+      if(order instanceof ApiResponse){
+        return order
+      }
+      await this.orderMailerService.sendOrderEmail(order)
+
+
+      return order;
 
     }
 
