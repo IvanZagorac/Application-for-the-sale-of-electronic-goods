@@ -7,12 +7,15 @@ import { UserRegistrationDto } from "../../dtos/user/user.registration.dto";
 import { ApiResponse } from "../../mlnsc/api/response.class";
 import * as crypto from "crypto";
 import { Administrator } from "../../../entities/administrator.entity";
+import { UserToken } from "../../../entities/User.token";
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<User>{
   constructor(
     @InjectRepository(User)
-    private readonly user:Repository<User>)//!!!! app module
+    private readonly user:Repository<User>,
+    @InjectRepository(UserToken)
+    private readonly userToken:Repository<UserToken>)//!!!! app module
   {
     super(user)
   }
@@ -59,5 +62,50 @@ export class UserService extends TypeOrmCrudService<User>{
     }
 
   }
+
+  async addToken(userId:number,token:string,expiresAt:string){
+    const userToken=new UserToken()
+    userToken.userId=userId;
+    userToken.token=token;
+    userToken.expiresAt=expiresAt;
+
+    return await this.userToken.save(userToken);
+  }
+
+  async getUserToken(token:string):Promise<UserToken>{
+    return await this.userToken.findOneBy({token:token})
+  }
+
+  async invalidateToken(token:string):Promise<UserToken |ApiResponse>{
+    const userToken=await this.userToken.findOneBy({token:token})
+
+    if(!userToken){
+      return new ApiResponse("error",-10001,"No such refresh token");
+
+    }
+
+    userToken.isValid=0;
+
+    await this.userToken.save(userToken)
+
+    return await this.getUserToken(token);
+
+  }
+
+  async invalidateUserTokens(userId:number):Promise<(UserToken |ApiResponse)[]>{
+    const userTokens=await this.userToken.findBy({userId:userId});
+
+    const results=[]
+
+    for(const userToken of userTokens){
+      results.push(this.invalidateToken(userToken.token));
+
+    }
+
+    return results
+
+
+  }
+
 
 }
